@@ -37,15 +37,16 @@ const StatusFilter = () => {
         variant="subtitle2"
         sx={{
           mb: 2,
-          fontWeight: 700,
+          fontWeight: 800,
           color: "text.primary",
           textTransform: "uppercase",
-          fontSize: "0.7rem",
+          fontSize: "0.9rem",
           letterSpacing: 0.5,
         }}
       >
-        ⚡ Filter by Status
+        Filter by Status
       </Typography>
+
       <ToggleButtonGroup
         value={selectedStatus}
         exclusive
@@ -57,9 +58,6 @@ const StatusFilter = () => {
             border: "1px solid",
             borderColor: "divider",
             borderRadius: 1,
-            mb: 0.5,
-            py: 1.5,
-            px: 2,
             textTransform: "none",
             justifyContent: "space-between",
             "&.Mui-selected": {
@@ -76,38 +74,79 @@ const StatusFilter = () => {
           },
         }}
       >
-        <ToggleButton value="all">
-          <Typography sx={{ fontWeight: 500 }}>All</Typography>
-          <Chip
-            label={getStatusCount("all")}
-            size="small"
-            sx={{ fontWeight: 700 }}
-          />
-        </ToggleButton>
-        <ToggleButton value="idle">
-          <Typography sx={{ fontWeight: 500 }}>Idle</Typography>
-          <Chip
-            label={getStatusCount("idle")}
-            size="small"
-            sx={{ fontWeight: 700 }}
-          />
-        </ToggleButton>
-        <ToggleButton value="en_route">
-          <Typography sx={{ fontWeight: 500 }}>En Route</Typography>
-          <Chip
-            label={getStatusCount("en_route")}
-            size="small"
-            sx={{ fontWeight: 700 }}
-          />
-        </ToggleButton>
-        <ToggleButton value="delivered">
-          <Typography sx={{ fontWeight: 500 }}>Delivered</Typography>
-          <Chip
-            label={getStatusCount("delivered")}
-            size="small"
-            sx={{ fontWeight: 700 }}
-          />
-        </ToggleButton>
+        <Box sx={{ display: "flex", gap: 3, mb: 1 }}>
+          <ToggleButton
+            value="all"
+            sx={{
+              flex: 1,
+              py: 1.5,
+              px: 2,
+              minWidth: "40px",
+              width: "100%",
+            }}
+          >
+            <Typography sx={{ fontWeight: 500 }}>All</Typography>
+            <Chip
+              label={getStatusCount("all")}
+              size="small"
+              sx={{ fontWeight: 700 }}
+            />
+          </ToggleButton>
+          <ToggleButton
+            value="idle"
+            sx={{
+              flex: 1,
+              py: 1.5,
+              px: 2,
+              minWidth: 0,
+              width: "100%",
+            }}
+          >
+            <Typography sx={{ fontWeight: 500 }}>Idle</Typography>
+            <Chip
+              label={getStatusCount("idle")}
+              size="small"
+              sx={{ fontWeight: 700 }}
+            />
+          </ToggleButton>
+        </Box>
+
+        <Box sx={{ display: "flex", gap: 3 }}>
+          <ToggleButton
+            value="en_route"
+            sx={{
+              flex: 1,
+              py: 1.5,
+              px: 2,
+              minWidth: 20,
+              width: "100%",
+            }}
+          >
+            <Typography sx={{ fontWeight: 500 }}>En Route</Typography>
+            <Chip
+              label={getStatusCount("en_route")}
+              size="small"
+              sx={{ fontWeight: 700 }}
+            />
+          </ToggleButton>
+          <ToggleButton
+            value="delivered"
+            sx={{
+              flex: 1,
+              py: 1.5,
+              px: 2,
+              minWidth: 20,
+              width: "100%",
+            }}
+          >
+            <Typography sx={{ fontWeight: 500 }}>Delivered</Typography>
+            <Chip
+              label={getStatusCount("delivered")}
+              size="small"
+              sx={{ fontWeight: 700 }}
+            />
+          </ToggleButton>
+        </Box>
       </ToggleButtonGroup>
     </Box>
   );

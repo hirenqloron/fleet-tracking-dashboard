@@ -22,7 +22,7 @@ const Dashboard = () => {
   const sidebarContent = (
     <Box
       sx={{
-        width: 280,
+        width:  380,
         bgcolor: "white",
         p: 3,
         height: "100%",
@@ -46,7 +46,7 @@ const Dashboard = () => {
             sx={{
               "& .MuiDrawer-paper": {
                 boxSizing: "border-box",
-                width: 280,
+                width: 380,
               },
             }}
           >
@@ -82,7 +82,7 @@ const Dashboard = () => {
         <>
           <Box
             sx={{
-              width: 280,
+              width: 380,
               bgcolor: "white",
               borderRight: 1,
               borderColor: "divider",
