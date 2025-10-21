@@ -45,7 +45,14 @@ const VehicleModal = () => {
   };
 
   const InfoField = ({ label, value, children }) => (
-    <Box sx={{ mb: 3 }}>
+    <Box
+      sx={{
+        mb: 3,
+        pl: 2,
+        borderLeft: "3px solid",
+        borderColor: "primary.main",
+      }}
+    >
       <Typography
         variant="caption"
         sx={{
@@ -60,14 +67,23 @@ const VehicleModal = () => {
       >
         {label}
       </Typography>
-      {children || (
-        <Typography
-          variant="body1"
-          sx={{ fontWeight: 600, fontSize: "0.95rem" }}
-        >
-          {value}
-        </Typography>
-      )}
+      <Box
+        sx={{
+          minHeight: "32px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        {children || (
+          <Typography
+            variant="body1"
+            sx={{ fontWeight: 600, fontSize: "0.95rem" }}
+          >
+            {value}
+          </Typography>
+        )}
+      </Box>
     </Box>
   );
 
@@ -81,6 +97,12 @@ const VehicleModal = () => {
       PaperProps={{
         elevation: 8,
         sx: { borderRadius: isMobile ? 0 : 3 },
+      }}
+      BackdropProps={{
+        sx: {
+          backdropFilter: "blur(8px)",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+        },
       }}
     >
       <Box sx={{ p: 3 }}>
@@ -130,9 +152,9 @@ const VehicleModal = () => {
               <InfoField label="📍 DESTINATION" value={vehicle.destination} />
 
               <InfoField label="🔋 BATTERY LEVEL">
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography
-                    variant="h6"
+                    variant="body1"
                     sx={{
                       fontWeight: 700,
                       color:
@@ -148,7 +170,7 @@ const VehicleModal = () => {
                     variant="determinate"
                     value={vehicle.batteryLevel || 0}
                     sx={{
-                      height: 8,
+                      height: 6,
                       borderRadius: 1,
                       bgcolor: "grey.200",
                       "& .MuiLinearProgress-bar": {
@@ -201,9 +223,9 @@ const VehicleModal = () => {
               </InfoField>
 
               <InfoField label="⛽ FUEL LEVEL">
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography
-                    variant="h6"
+                    variant="body1"
                     sx={{
                       fontWeight: 700,
                       color:
@@ -217,7 +239,7 @@ const VehicleModal = () => {
                     variant="determinate"
                     value={vehicle.fuelLevel || 0}
                     sx={{
-                      height: 8,
+                      height: 6,
                       borderRadius: 1,
                       bgcolor: "grey.200",
                       "& .MuiLinearProgress-bar": {

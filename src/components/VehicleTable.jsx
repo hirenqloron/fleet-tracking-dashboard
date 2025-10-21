@@ -54,7 +54,7 @@ const VehicleTable = () => {
     };
   }, [dispatch]);
 
-  const handleRowClick = (vehicle) => {
+  const handleVehicleClick = (vehicle) => {
     dispatch(setSelectedVehicle(vehicle));
   };
 
@@ -144,30 +144,18 @@ const VehicleTable = () => {
           </TableHead>
           <TableBody>
             {vehicles.map((vehicle) => (
-              <TableRow
-                key={vehicle.id}
-                sx={{
-                  cursor: "pointer",
-                  "&:hover": {
-                    bgcolor: "primary.light",
-                    "& .MuiTableCell-root": {
-                      color: "primary.contrastText",
-                    },
-                    "& .vehicle-link": {
-                      color: "primary.contrastText",
-                    },
-                  },
-                  transition: "all 0.2s",
-                }}
-                onClick={() => handleRowClick(vehicle)}
-              >
+              <TableRow key={vehicle.id}>
                 <TableCell>
                   <Typography
-                    className="vehicle-link"
+                    onClick={() => handleVehicleClick(vehicle)}
                     sx={{
                       fontWeight: 600,
                       color: "primary.main",
                       textDecoration: "none",
+                      cursor: "pointer",
+                      "&:hover": {
+                        textDecoration: "underline",
+                      },
                     }}
                   >
                     {vehicle.vehicleNumber}
