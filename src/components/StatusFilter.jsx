@@ -5,12 +5,13 @@ import { setSelectedStatus, selectAllVehicles } from '../redux/slices/vehicleSli
 
 const StatusFilter = () => {
   const dispatch = useDispatch();
-  const vehicles = useSelector(selectAllVehicles);
+  const vehicles = useSelector(selectAllVehicles) || [];
   const selectedStatus = useSelector((state) => state.vehicles.selectedStatus);
 
   const getStatusCount = (status) => {
+    if (!Array.isArray(vehicles)) return 0;
     if (status === 'all') return vehicles.length;
-    return vehicles.filter(v => v.status.toLowerCase() === status.toLowerCase()).length;
+    return vehicles.filter(v => v.status && v.status.toLowerCase() === status.toLowerCase()).length;
   };
 
   const statuses = [

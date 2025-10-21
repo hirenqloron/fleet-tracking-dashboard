@@ -1,16 +1,13 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { vehicleAPI } from '../../services/api';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { vehicleAPI } from "../../services/api";
 
-export const fetchVehicles = createAsyncThunk(
-  'vehicles/fetchAll',
-  async () => {
-    const response = await vehicleAPI.getAllVehicles();
-    return response.data;
-  }
-);
+export const fetchVehicles = createAsyncThunk("vehicles/fetchAll", async () => {
+  const response = await vehicleAPI.getAllVehicles();
+  return response.data;
+});
 
 export const fetchVehicleById = createAsyncThunk(
-  'vehicles/fetchById',
+  "vehicles/fetchById",
   async (id) => {
     const response = await vehicleAPI.getVehicleById(id);
     return response.data;
@@ -18,7 +15,7 @@ export const fetchVehicleById = createAsyncThunk(
 );
 
 export const fetchVehiclesByStatus = createAsyncThunk(
-  'vehicles/fetchByStatus',
+  "vehicles/fetchByStatus",
   async (status) => {
     const response = await vehicleAPI.getVehiclesByStatus(status);
     return response.data;
@@ -26,11 +23,11 @@ export const fetchVehiclesByStatus = createAsyncThunk(
 );
 
 const vehicleSlice = createSlice({
-  name: 'vehicles',
+  name: "vehicles",
   initialState: {
     list: [],
     selectedVehicle: null,
-    selectedStatus: 'all',
+    selectedStatus: "all",
     loading: false,
     error: null,
     lastUpdated: null,
@@ -99,12 +96,16 @@ export default vehicleSlice.reducer;
 export const selectAllVehicles = (state) => state.vehicles.list;
 export const selectFilteredVehicles = (state) => {
   const { list, selectedStatus } = state.vehicles;
-  if (selectedStatus === 'all') return list;
-  return list.filter(vehicle => 
-    vehicle.status.toLowerCase() === selectedStatus.toLowerCase()
+  if (!Array.isArray(list)) return [];
+  if (selectedStatus === "all") return list;
+  return list.filter(
+    (vehicle) =>
+      vehicle.status &&
+      vehicle.status.toLowerCase() === selectedStatus.toLowerCase()
   );
 };
 export const selectSelectedVehicle = (state) => state.vehicles.selectedVehicle;
 export const selectVehiclesLoading = (state) => state.vehicles.loading;
 export const selectLastUpdated = (state) => state.vehicles.lastUpdated;
-export const selectWebSocketConnected = (state) => state.vehicles.isWebSocketConnected;
+export const selectWebSocketConnected = (state) =>
+  state.vehicles.isWebSocketConnected;

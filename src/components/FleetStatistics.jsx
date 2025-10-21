@@ -10,17 +10,23 @@ import { selectAllVehicles } from "../redux/slices/vehicleSlice";
 const FleetStatistics = () => {
   const dispatch = useDispatch();
   const statistics = useSelector(selectStatistics);
-  const vehicles = useSelector(selectAllVehicles);
+  const vehicles = useSelector(selectAllVehicles) || [];
 
   useEffect(() => {
     dispatch(fetchStatistics());
   }, [dispatch]);
 
   const calculateStats = () => {
+    if (!Array.isArray(vehicles) || vehicles.length === 0) {
+      return {
+        total: 0,
+        avgSpeed: 0,
+      };
+    }
+
     const total = vehicles.length;
     const avgSpeed =
-      vehicles.reduce((acc, v) => acc + (parseFloat(v.speed) || 0), 0) /
-      (total || 1);
+      vehicles.reduce((acc, v) => acc + (parseFloat(v.speed) || 0), 0) / total;
 
     return {
       total,
