@@ -50,7 +50,7 @@ const VehicleModal = () => {
       sx={{
         mb: 3,
         pl: 2,
-        borderLeft: "3px solid",
+        borderLeft: "5px solid",
         borderRadius: "6px",
         borderColor: "primary.main",
       }}

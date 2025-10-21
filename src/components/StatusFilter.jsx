@@ -5,7 +5,6 @@ import {
   Typography,
   ToggleButtonGroup,
   ToggleButton,
-  Chip,
 } from "@mui/material";
 import {
   setSelectedStatus,
@@ -18,7 +17,7 @@ import {
   fetchStatistics,
 } from "../redux/slices/statisticsSlice";
 
-const StatusFilter = () => {
+const StatusFilter = ({ onClose }) => {
   const dispatch = useDispatch();
   const selectedStatus = useSelector(selectSelectedStatus);
   const statistics = useSelector(selectStatistics);
@@ -51,6 +50,8 @@ const StatusFilter = () => {
       }
 
       dispatch(fetchStatistics());
+
+      if (onClose) onClose();
     }
   };
 
@@ -83,91 +84,77 @@ const StatusFilter = () => {
             borderRadius: 1,
             textTransform: "none",
             justifyContent: "space-between",
+            px: 2,
+            py: 1.5,
             "&.Mui-selected": {
               bgcolor: "primary.main",
               color: "white",
               "&:hover": {
                 bgcolor: "primary.dark",
               },
-              "& .MuiChip-root": {
-                bgcolor: "white",
-                color: "primary.main",
-              },
             },
           },
         }}
       >
-        <Box sx={{ display: "flex", gap: 3, mb: 1 }}>
-          <ToggleButton
-            value="all"
-            sx={{
-              flex: 1,
-              py: 1.5,
-              px: 2,
-              minWidth: "40px",
-              width: "100%",
-            }}
-          >
-            <Typography sx={{ fontWeight: 500 }}>All</Typography>
-            <Chip
-              label={getStatusCount("all")}
-              size="small"
-              sx={{ fontWeight: 700 }}
-            />
+        <Box sx={{ display: "flex", gap: 2, mb: 1, width: "100%" }}>
+          <ToggleButton value="all" sx={{ flex: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Typography sx={{ fontWeight: 500 }}>All</Typography>
+              <Typography sx={{ fontWeight: 700 }}>
+                {getStatusCount("all")}
+              </Typography>
+            </Box>
           </ToggleButton>
-          <ToggleButton
-            value="idle"
-            sx={{
-              flex: 1,
-              py: 1.5,
-              px: 2,
-              minWidth: 0,
-              width: "100%",
-            }}
-          >
-            <Typography sx={{ fontWeight: 500 }}>Idle</Typography>
-            <Chip
-              label={getStatusCount("idle")}
-              size="small"
-              sx={{ fontWeight: 700 }}
-            />
+          <ToggleButton value="idle" sx={{ flex: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Typography sx={{ fontWeight: 500 }}>Idle</Typography>
+              <Typography sx={{ fontWeight: 700 }}>
+                {getStatusCount("idle")}
+              </Typography>
+            </Box>
           </ToggleButton>
         </Box>
 
-        <Box sx={{ display: "flex", gap: 3 }}>
-          <ToggleButton
-            value="en_route"
-            sx={{
-              flex: 1,
-              py: 1.5,
-              px: 2,
-              minWidth: 20,
-              width: "100%",
-            }}
-          >
-            <Typography sx={{ fontWeight: 500 }}>En Route</Typography>
-            <Chip
-              label={getStatusCount("en_route")}
-              size="small"
-              sx={{ fontWeight: 700 }}
-            />
+        <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
+          <ToggleButton value="en_route" sx={{ flex: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Typography sx={{ fontWeight: 500 }}>En Route</Typography>
+              <Typography sx={{ fontWeight: 700 }}>
+                {getStatusCount("en_route")}
+              </Typography>
+            </Box>
           </ToggleButton>
-          <ToggleButton
-            value="delivered"
-            sx={{
-              flex: 1,
-              py: 1.5,
-              px: 2,
-              minWidth: 20,
-              width: "100%",
-            }}
-          >
-            <Typography sx={{ fontWeight: 500 }}>Delivered</Typography>
-            <Chip
-              label={getStatusCount("delivered")}
-              size="small"
-              sx={{ fontWeight: 700 }}
-            />
+          <ToggleButton value="delivered" sx={{ flex: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Typography sx={{ fontWeight: 500 }}>Delivered</Typography>
+              <Typography sx={{ fontWeight: 700 }}>
+                {getStatusCount("delivered")}
+              </Typography>
+            </Box>
           </ToggleButton>
         </Box>
       </ToggleButtonGroup>

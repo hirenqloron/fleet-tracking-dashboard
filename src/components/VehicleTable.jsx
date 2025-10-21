@@ -12,8 +12,6 @@ import {
   CircularProgress,
   Box,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
 import {
   fetchVehicles,
@@ -35,8 +33,6 @@ const VehicleTable = () => {
   const vehicles = useSelector(selectAllVehicles);
   const loading = useSelector(selectVehiclesLoading);
   const isConnected = useSelector(selectWebSocketConnected);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     dispatch(fetchVehicles());
@@ -97,7 +93,7 @@ const VehicleTable = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: "1.125rem" }}>
           Vehicles ({vehicles.length})
         </Typography>
         <Chip
@@ -113,6 +109,9 @@ const VehicleTable = () => {
           color="success"
           size="small"
           sx={{
+            fontWeight: 600,
+            fontSize: "0.75rem",
+            height: 24,
             "@keyframes pulse": {
               "0%, 100%": { opacity: 1 },
               "50%": { opacity: 0.5 },
@@ -124,35 +123,60 @@ const VehicleTable = () => {
         component={Paper}
         elevation={0}
         sx={{
-          borderRadius: 2,
           border: "1px solid",
           borderColor: "divider",
+          borderRadius: 1,
         }}
       >
         <Table>
           <TableHead>
             <TableRow sx={{ bgcolor: "grey.50" }}>
-              <TableCell sx={{ fontWeight: 700, py: 2 }}>Vehicle</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Driver</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Speed</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Destination</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>ETA</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Last Update</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Location</TableCell>
+              <TableCell
+                sx={{ fontWeight: 700, fontSize: "0.813rem", py: 1.5 }}
+              >
+                Vehicle
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                Driver
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                Status
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                Speed
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                Destination
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                ETA
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                Last Update
+              </TableCell>
+              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                Location
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {vehicles.map((vehicle) => (
-              <TableRow key={vehicle.id}>
-                <TableCell>
+              <TableRow
+                key={vehicle.id}
+                sx={{
+                  "&:hover": {
+                    bgcolor: "grey.50",
+                  },
+                }}
+              >
+                <TableCell sx={{ py: 1.5 }}>
                   <Typography
                     onClick={() => handleVehicleClick(vehicle.id)}
                     sx={{
                       fontWeight: 600,
                       color: "primary.main",
-                      textDecoration: "none",
                       cursor: "pointer",
+                      fontSize: "0.875rem",
                       "&:hover": {
                         textDecoration: "underline",
                       },
@@ -161,32 +185,37 @@ const VehicleTable = () => {
                     {vehicle.vehicleNumber}
                   </Typography>
                 </TableCell>
-                <TableCell>{vehicle.driverName}</TableCell>
+                <TableCell sx={{ fontSize: "0.875rem" }}>
+                  {vehicle.driverName}
+                </TableCell>
                 <TableCell>
                   <Chip
-                    label={vehicle.status.replace("_", " ")}
+                    label={vehicle.status.replace("_", " ").toUpperCase()}
                     color={getStatusColor(vehicle.status)}
                     size="small"
                     sx={{
                       fontWeight: 600,
-                      textTransform: "capitalize",
-                      fontSize: "0.75rem",
+                      fontSize: "0.688rem",
+                      height: 22,
+                      textTransform: "uppercase",
                     }}
                   />
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">
+                  <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
                     <strong>{vehicle.speed}</strong> mph
                   </Typography>
                 </TableCell>
-                <TableCell>{vehicle.destination}</TableCell>
+                <TableCell sx={{ fontSize: "0.875rem" }}>
+                  {vehicle.destination}
+                </TableCell>
                 <TableCell>
-                  <Typography variant="body2">
+                  <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
                     {formatETA(vehicle.estimatedArrival)}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">
+                  <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
                     {formatDateTime(vehicle.lastUpdated)}
                   </Typography>
                 </TableCell>

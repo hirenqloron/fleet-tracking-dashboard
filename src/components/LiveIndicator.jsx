@@ -1,17 +1,21 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Box, Typography, Chip } from "@mui/material";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { Box, Typography } from "@mui/material";
 import { selectWebSocketConnected } from "../redux/slices/vehicleSlice";
 
 const LiveIndicator = () => {
   const isConnected = useSelector(selectWebSocketConnected);
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box>
       <Typography
         variant="h6"
-        sx={{ mb: 2, fontWeight: 700, fontSize: "1.1rem" }}
+        sx={{
+          mb: 0.5,
+          fontWeight: 700,
+          fontSize: "1.125rem",
+          color: "text.primary",
+        }}
       >
         🚚 Fleet Tracking Dashboard
       </Typography>
@@ -19,34 +23,13 @@ const LiveIndicator = () => {
         variant="caption"
         sx={{
           color: "text.secondary",
-          fontSize: "0.7rem",
-          mb: 1,
+          fontSize: "0.75rem",
           display: "block",
+          lineHeight: 1.5,
         }}
       >
         Real-time vehicle monitoring • Logisticar Case Study
       </Typography>
-      <Chip
-        icon={
-          <FiberManualRecordIcon
-            sx={{
-              fontSize: 10,
-              animation: isConnected ? "pulse 2s infinite" : "none",
-            }}
-          />
-        }
-        label="Live Updates Active"
-        color={isConnected ? "success" : "default"}
-        size="small"
-        sx={{
-          fontSize: "0.7rem",
-          height: 24,
-          "@keyframes pulse": {
-            "0%, 100%": { opacity: 1 },
-            "50%": { opacity: 0.5 },
-          },
-        }}
-      />
     </Box>
   );
 };
