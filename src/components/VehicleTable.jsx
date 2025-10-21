@@ -161,11 +161,28 @@ const VehicleTable = () => {
           border: "1px solid",
           borderColor: "divider",
           borderRadius: 1,
+          maxHeight: "calc(100vh - 200px)", 
+          overflowX: "auto", 
+          overflowY: "auto",
+          "&::-webkit-scrollbar": {
+            width: "8px",
+            height: "8px",
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "#f1f1f1",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#888",
+            borderRadius: "4px",
+            "&:hover": {
+              backgroundColor: "#555",
+            },
+          },
         }}
       >
         <Table className="vehicle-table">
           <TableHead>
-            <TableRow sx={{ bgcolor: "grey.50" }}>
+            <TableRow sx={{ bgcolor: "grey.300" }}>
               <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
                 Vehicle
               </TableCell>
