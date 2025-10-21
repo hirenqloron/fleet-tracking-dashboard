@@ -25,7 +25,8 @@ const Dashboard = () => {
   const sidebarContent = (
     <Box
       sx={{
-        width: 420,
+        width: isMobile ? "100vw" : 420,
+        maxWidth: isMobile ? "100vw" : 420,
         bgcolor: "white",
         p: 3,
         height: "100%",
@@ -65,7 +66,7 @@ const Dashboard = () => {
         <LiveIndicator />
       </Box>
 
-      <Box sx={{ display: "flex", flex: 1 }}>
+      <Box sx={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {isMobile ? (
           <>
             <Drawer
@@ -75,7 +76,8 @@ const Dashboard = () => {
               sx={{
                 "& .MuiDrawer-paper": {
                   boxSizing: "border-box",
-                  width: 420,
+                  width: "100vw",
+                  maxWidth: "100vw",
                 },
               }}
             >
@@ -86,10 +88,8 @@ const Dashboard = () => {
               </Box>
               {sidebarContent}
             </Drawer>
-            <Box sx={{ flex: 1, p: 0, overflowY: "auto" }}>
-              <Container maxWidth="xl" disableGutters>
-                <VehicleTable />
-              </Container>
+            <Box sx={{ flex: 1, overflowY: "auto", width: "100%" }}>
+              <VehicleTable />
             </Box>
           </>
         ) : (

@@ -11,6 +11,11 @@ import {
   CircularProgress,
   Box,
   Typography,
+  Card,
+  CardContent,
+  Chip,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import {
   fetchVehicles,
@@ -32,6 +37,8 @@ const VehicleTable = () => {
   const vehicles = useSelector(selectAllVehicles);
   const loading = useSelector(selectVehiclesLoading);
   const isConnected = useSelector(selectWebSocketConnected);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     dispatch(fetchVehicles());
@@ -94,18 +101,145 @@ const VehicleTable = () => {
     );
   }
 
-  return (
-    <Box
+  const VehicleCard = ({ vehicle }) => (
+    <Card
       sx={{
-        p: 0,
+        mb: 2,
+        cursor: "pointer",
+        "&:hover": {
+          boxShadow: 3,
+        },
       }}
+      onClick={() => handleVehicleClick(vehicle.id)}
     >
+      <CardContent sx={{ p: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1.5 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 700,
+              color: "primary.main",
+              fontSize: "1rem",
+            }}
+          >
+            {vehicle.vehicleNumber}
+          </Typography>
+          <Box
+            sx={{
+              px: 1.5,
+              py: 0.5,
+              borderRadius: 2,
+              ...getStatusStyle(vehicle.status),
+            }}
+          >
+            <Typography
+              sx={{
+                fontWeight: 700,
+                fontSize: "0.7rem",
+                textTransform: "uppercase",
+              }}
+            >
+              {vehicle.status.replace("_", " ")}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: "0.813rem" }}
+            >
+              Driver:
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 600, fontSize: "0.813rem" }}
+            >
+              {vehicle.driverName}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: "0.813rem" }}
+            >
+              Speed:
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: 600, fontSize: "0.813rem" }}
+            >
+              {vehicle.speed} mph
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: "0.813rem" }}
+            >
+              Destination:
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontWeight: 600,
+                fontSize: "0.813rem",
+                textAlign: "right",
+                maxWidth: "60%",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {vehicle.destination}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: "0.813rem" }}
+            >
+              ETA:
+            </Typography>
+            <Typography variant="body2" sx={{ fontSize: "0.813rem" }}>
+              {formatETA(vehicle.estimatedArrival)}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontSize: "0.813rem" }}
+            >
+              Updated:
+            </Typography>
+            <Typography variant="body2" sx={{ fontSize: "0.75rem" }}>
+              {formatDateTime(vehicle.lastUpdated)}
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <Box sx={{ p: isMobile ? 2 : 0 }}>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           mb: 3,
+          px: isMobile ? 0 : 2,
         }}
       >
         <Typography
@@ -113,7 +247,6 @@ const VehicleTable = () => {
           sx={{
             fontWeight: 700,
             fontSize: "1.125rem",
-            marginLeft: "15px",
             marginTop: "15px",
           }}
         >
@@ -129,7 +262,6 @@ const VehicleTable = () => {
             bgcolor: "success.light",
             borderRadius: 1,
             marginTop: "15px",
-            marginRight: "15px",
           }}
         >
           <FiberManualRecordIcon
@@ -154,147 +286,156 @@ const VehicleTable = () => {
           </Typography>
         </Box>
       </Box>
-      <TableContainer
-        component={Paper}
-        elevation={0}
-        sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 1,
-          maxHeight: "calc(100vh - 200px)", 
-          overflowX: "auto", 
-          overflowY: "auto",
-          "&::-webkit-scrollbar": {
-            width: "8px",
-            height: "8px",
-          },
-          "&::-webkit-scrollbar-track": {
-            backgroundColor: "#f1f1f1",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#888",
-            borderRadius: "4px",
-            "&:hover": {
-              backgroundColor: "#555",
+
+      {isMobile ? (
+        <Box>
+          {vehicles.map((vehicle) => (
+            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+          ))}
+        </Box>
+      ) : (
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          sx={{
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 1,
+            maxHeight: "calc(100vh - 200px)",
+            overflowX: "auto",
+            overflowY: "auto",
+            "&::-webkit-scrollbar": {
+              width: "8px",
+              height: "8px",
             },
-          },
-        }}
-      >
-        <Table className="vehicle-table">
-          <TableHead>
-            <TableRow sx={{ bgcolor: "grey.300" }}>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
-                Vehicle
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
-                Driver
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
-                Status
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
-                Speed
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
-                Destination
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
-                ETA
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
-                Last Update
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
-                Location
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {vehicles.map((vehicle) => (
-              <TableRow
-                key={vehicle.id}
-                sx={{
-                  "&:hover": {
-                    bgcolor: "grey.50",
-                  },
-                }}
-              >
-                <TableCell sx={{ py: 1.5 }}>
-                  <Typography
-                    onClick={() => handleVehicleClick(vehicle.id)}
-                    sx={{
-                      fontWeight: 600,
-                      color: "primary.main",
-                      cursor: "pointer",
-                      fontSize: "0.875rem",
-                      "&:hover": {
-                        textDecoration: "underline",
-                      },
-                    }}
-                  >
-                    {vehicle.vehicleNumber}
-                  </Typography>
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "#f1f1f1",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#888",
+              borderRadius: "4px",
+              "&:hover": {
+                backgroundColor: "#555",
+              },
+            },
+          }}
+        >
+          <Table className="vehicle-table">
+            <TableHead>
+              <TableRow sx={{ bgcolor: "grey.300" }}>
+                <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                  Vehicle
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem" }}>
-                  {vehicle.driverName}
+                <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                  Driver
                 </TableCell>
-                <TableCell>
-                  <Box
-                    sx={{
-                      display: "inline-block",
-                      px: 2,
-                      py: 0.75,
-                      borderRadius: 2,
-                      ...getStatusStyle(vehicle.status),
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontWeight: 700,
-                        fontSize: "0.75rem",
-                        textTransform: "uppercase",
-                        letterSpacing: 0.5,
-                      }}
-                    >
-                      {vehicle.status.replace("_", " ")}
-                    </Typography>
-                  </Box>
+                <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                  Status
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
-                    <strong>{vehicle.speed}</strong> mph
-                  </Typography>
+                <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                  Speed
                 </TableCell>
-                <TableCell sx={{ fontSize: "0.875rem" }}>
-                  {vehicle.destination}
+                <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                  Destination
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
-                    {formatETA(vehicle.estimatedArrival)}
-                  </Typography>
+                <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                  ETA
                 </TableCell>
-                <TableCell>
-                  <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
-                    {formatDateTime(vehicle.lastUpdated)}
-                  </Typography>
+                <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                  Last Update
                 </TableCell>
-                <TableCell>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontFamily: "monospace",
-                      color: "text.secondary",
-                      fontSize: "0.813rem",
-                    }}
-                  >
-                    {formatLocation(vehicle.currentLocation)}
-                  </Typography>
+                <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
+                  Location
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {vehicles.map((vehicle) => (
+                <TableRow
+                  key={vehicle.id}
+                  sx={{
+                    "&:hover": {
+                      bgcolor: "grey.50",
+                    },
+                  }}
+                >
+                  <TableCell sx={{ py: 1.5 }}>
+                    <Typography
+                      onClick={() => handleVehicleClick(vehicle.id)}
+                      sx={{
+                        fontWeight: 600,
+                        color: "primary.main",
+                        cursor: "pointer",
+                        fontSize: "0.875rem",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      {vehicle.vehicleNumber}
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "0.875rem" }}>
+                    {vehicle.driverName}
+                  </TableCell>
+                  <TableCell>
+                    <Box
+                      sx={{
+                        display: "inline-block",
+                        px: 2,
+                        py: 0.75,
+                        borderRadius: 2,
+                        ...getStatusStyle(vehicle.status),
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontWeight: 700,
+                          fontSize: "0.75rem",
+                          textTransform: "uppercase",
+                          letterSpacing: 0.5,
+                        }}
+                      >
+                        {vehicle.status.replace("_", " ")}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                      <strong>{vehicle.speed}</strong> mph
+                    </Typography>
+                  </TableCell>
+                  <TableCell sx={{ fontSize: "0.875rem" }}>
+                    {vehicle.destination}
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                      {formatETA(vehicle.estimatedArrival)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
+                      {formatDateTime(vehicle.lastUpdated)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontFamily: "monospace",
+                        color: "text.secondary",
+                        fontSize: "0.813rem",
+                      }}
+                    >
+                      {formatLocation(vehicle.currentLocation)}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 };
