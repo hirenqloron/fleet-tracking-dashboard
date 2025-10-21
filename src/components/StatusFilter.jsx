@@ -9,25 +9,48 @@ import {
 } from "@mui/material";
 import {
   setSelectedStatus,
-  selectAllVehicles,
+  selectSelectedStatus,
+  fetchVehicles,
+  fetchVehiclesByStatus,
 } from "../redux/slices/vehicleSlice";
+import {
+  selectStatistics,
+  fetchStatistics,
+} from "../redux/slices/statisticsSlice";
 
 const StatusFilter = () => {
   const dispatch = useDispatch();
-  const vehicles = useSelector(selectAllVehicles) || [];
-  const selectedStatus = useSelector((state) => state.vehicles.selectedStatus);
+  const selectedStatus = useSelector(selectSelectedStatus);
+  const statistics = useSelector(selectStatistics);
 
   const getStatusCount = (status) => {
-    if (!Array.isArray(vehicles)) return 0;
-    if (status === "all") return vehicles.length;
-    return vehicles.filter(
-      (v) => v.status && v.status.toLowerCase() === status.toLowerCase()
-    ).length;
+    if (!statistics) return 0;
+
+    switch (status) {
+      case "all":
+        return statistics.total || 0;
+      case "idle":
+        return statistics.idle || 0;
+      case "en_route":
+        return statistics.en_route || 0;
+      case "delivered":
+        return statistics.delivered || 0;
+      default:
+        return 0;
+    }
   };
 
   const handleChange = (event, newStatus) => {
     if (newStatus !== null) {
       dispatch(setSelectedStatus(newStatus));
+
+      if (newStatus === "all") {
+        dispatch(fetchVehicles());
+      } else {
+        dispatch(fetchVehiclesByStatus(newStatus));
+      }
+
+      dispatch(fetchStatistics());
     }
   };
 

@@ -17,9 +17,9 @@ import {
 } from "@mui/material";
 import {
   fetchVehicles,
-  selectFilteredVehicles,
+  fetchVehicleById,
+  selectAllVehicles,
   selectVehiclesLoading,
-  setSelectedVehicle,
   selectWebSocketConnected,
 } from "../redux/slices/vehicleSlice";
 import { fetchStatistics } from "../redux/slices/statisticsSlice";
@@ -32,7 +32,7 @@ import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 const VehicleTable = () => {
   const dispatch = useDispatch();
-  const vehicles = useSelector(selectFilteredVehicles);
+  const vehicles = useSelector(selectAllVehicles);
   const loading = useSelector(selectVehiclesLoading);
   const isConnected = useSelector(selectWebSocketConnected);
   const theme = useTheme();
@@ -54,8 +54,8 @@ const VehicleTable = () => {
     };
   }, [dispatch]);
 
-  const handleVehicleClick = (vehicle) => {
-    dispatch(setSelectedVehicle(vehicle));
+  const handleVehicleClick = (vehicleId) => {
+    dispatch(fetchVehicleById(vehicleId));
   };
 
   const getStatusColor = (status) => {
@@ -147,7 +147,7 @@ const VehicleTable = () => {
               <TableRow key={vehicle.id}>
                 <TableCell>
                   <Typography
-                    onClick={() => handleVehicleClick(vehicle)}
+                    onClick={() => handleVehicleClick(vehicle.id)}
                     sx={{
                       fontWeight: 600,
                       color: "primary.main",
