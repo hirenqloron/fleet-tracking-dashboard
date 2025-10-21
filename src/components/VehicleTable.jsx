@@ -8,7 +8,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Chip,
   CircularProgress,
   Box,
   Typography,
@@ -54,17 +53,29 @@ const VehicleTable = () => {
     dispatch(fetchVehicleById(vehicleId));
   };
 
-  const getStatusColor = (status) => {
+  const getStatusStyle = (status) => {
     const normalizedStatus = status.toLowerCase().replace("_", " ");
     switch (normalizedStatus) {
       case "delivered":
-        return "success";
+        return {
+          bgcolor: "#D1F4E0",
+          color: "#00875A",
+        };
       case "en route":
-        return "info";
+        return {
+          bgcolor: "#DEEBFF",
+          color: "#0052CC",
+        };
       case "idle":
-        return "warning";
+        return {
+          bgcolor: "#F4F5F7",
+          color: "#6B778C",
+        };
       default:
-        return "default";
+        return {
+          bgcolor: "#F4F5F7",
+          color: "#6B778C",
+        };
     }
   };
 
@@ -96,28 +107,38 @@ const VehicleTable = () => {
         <Typography variant="h6" sx={{ fontWeight: 700, fontSize: "1.125rem" }}>
           Vehicles ({vehicles.length})
         </Typography>
-        <Chip
-          icon={
-            <FiberManualRecordIcon
-              sx={{
-                fontSize: 10,
-                animation: isConnected ? "pulse 2s infinite" : "none",
-              }}
-            />
-          }
-          label="Live"
-          color="success"
-          size="small"
+        <Box
           sx={{
-            fontWeight: 600,
-            fontSize: "0.75rem",
-            height: 24,
-            "@keyframes pulse": {
-              "0%, 100%": { opacity: 1 },
-              "50%": { opacity: 0.5 },
-            },
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            px: 1.5,
+            py: 0.5,
+            bgcolor: "success.light",
+            borderRadius: 1,
           }}
-        />
+        >
+          <FiberManualRecordIcon
+            sx={{
+              fontSize: 10,
+              color: "success.main",
+              animation: isConnected ? "pulse 2s infinite" : "none",
+              "@keyframes pulse": {
+                "0%, 100%": { opacity: 1 },
+                "50%": { opacity: 0.5 },
+              },
+            }}
+          />
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: "0.75rem",
+              color: "success.main",
+            }}
+          >
+            Live
+          </Typography>
+        </Box>
       </Box>
       <TableContainer
         component={Paper}
@@ -189,17 +210,26 @@ const VehicleTable = () => {
                   {vehicle.driverName}
                 </TableCell>
                 <TableCell>
-                  <Chip
-                    label={vehicle.status.replace("_", " ").toUpperCase()}
-                    color={getStatusColor(vehicle.status)}
-                    size="small"
+                  <Box
                     sx={{
-                      fontWeight: 600,
-                      fontSize: "0.688rem",
-                      height: 22,
-                      textTransform: "uppercase",
+                      display: "inline-block",
+                      px: 2,
+                      py: 0.75,
+                      borderRadius: 2,
+                      ...getStatusStyle(vehicle.status),
                     }}
-                  />
+                  >
+                    <Typography
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: "0.75rem",
+                        textTransform: "uppercase",
+                        letterSpacing: 0.5,
+                      }}
+                    >
+                      {vehicle.status.replace("_", " ")}
+                    </Typography>
+                  </Box>
                 </TableCell>
                 <TableCell>
                   <Typography variant="body2" sx={{ fontSize: "0.875rem" }}>
