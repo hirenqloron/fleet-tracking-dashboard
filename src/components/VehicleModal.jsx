@@ -35,7 +35,7 @@ const VehicleModal = () => {
   if (!vehicle) return null;
 
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status.toLowerCase().replace("_", " ")) {
       case "delivered":
         return "success";
       case "en route":
@@ -105,7 +105,7 @@ const VehicleModal = () => {
                 Status
               </Typography>
               <Chip
-                label={vehicle.status}
+                label={vehicle.status.replace('_', ' ')} 
                 color={getStatusColor(vehicle.status)}
                 size="medium"
                 sx={{ fontWeight: 600, textTransform: "capitalize" }}

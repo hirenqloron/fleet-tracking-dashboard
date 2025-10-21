@@ -79,11 +79,12 @@ export const selectFilteredVehicles = (state) => {
   const { list, selectedStatus } = state.vehicles;
   if (!Array.isArray(list)) return [];
   if (selectedStatus === "all") return list;
-  return list.filter(
-    (vehicle) =>
-      vehicle.status &&
-      vehicle.status.toLowerCase() === selectedStatus.toLowerCase()
-  );
+  return list.filter((vehicle) => {
+    if (!vehicle.status) return false;
+    const vehicleStatus = vehicle.status.toLowerCase().replace(" ", "_");
+    const filterStatus = selectedStatus.toLowerCase().replace(" ", "_");
+    return vehicleStatus === filterStatus;
+  });
 };
 export const selectSelectedVehicle = (state) => state.vehicles.selectedVehicle;
 export const selectVehiclesLoading = (state) => state.vehicles.loading;

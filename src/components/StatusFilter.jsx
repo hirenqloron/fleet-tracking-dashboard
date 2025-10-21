@@ -29,7 +29,7 @@ const StatusFilter = () => {
   const statuses = [
     { value: "all", label: "All" },
     { value: "idle", label: "Idle" },
-    { value: "en route", label: "En Route" },
+    { value: "en_route", label: "En Route" },
     { value: "delivered", label: "Delivered" },
   ];
 

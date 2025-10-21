@@ -14,7 +14,7 @@ import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 const FleetStatistics = () => {
   const dispatch = useDispatch();
   const statistics = useSelector(selectStatistics);
-
+  console.log(statistics, 123)
   useEffect(() => {
     dispatch(fetchStatistics());
   }, [dispatch]);
