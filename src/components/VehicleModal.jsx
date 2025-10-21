@@ -11,6 +11,8 @@ import {
   Chip,
   Divider,
   LinearProgress,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -18,10 +20,13 @@ import {
   clearSelectedVehicle,
   selectSelectedVehicle,
 } from "../redux/slices/vehicleSlice";
+import { formatDateTime, formatLocation } from "../utils/formatters";
 
 const VehicleModal = () => {
   const dispatch = useDispatch();
   const vehicle = useSelector(selectSelectedVehicle);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleClose = () => {
     dispatch(clearSelectedVehicle());
@@ -36,7 +41,7 @@ const VehicleModal = () => {
       case "en route":
         return "info";
       case "idle":
-        return "default";
+        return "warning";
       default:
         return "default";
     }
@@ -48,117 +53,227 @@ const VehicleModal = () => {
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
+      fullScreen={isMobile}
+      PaperProps={{
+        elevation: 8,
+        sx: { borderRadius: isMobile ? 0 : 2 },
+      }}
     >
       <DialogTitle
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          bgcolor: "primary.main",
+          color: "primary.contrastText",
+          py: 2,
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <LocalShippingIcon />
-          <Typography variant="h6">{vehicle.vehicleNumber}</Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          <LocalShippingIcon sx={{ fontSize: 28 }} />
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            {vehicle.vehicleNumber}
+          </Typography>
         </Box>
-        <IconButton onClick={handleClose} size="small">
+        <IconButton
+          onClick={handleClose}
+          size="small"
+          sx={{
+            color: "primary.contrastText",
+            "&:hover": { bgcolor: "primary.dark" },
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <Divider />
-      <DialogContent>
+      <DialogContent sx={{ pt: 3 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              <Typography variant="caption" color="text.secondary">
-                STATUS
+              <Typography
+                variant="overline"
+                color="text.secondary"
+                sx={{ fontWeight: 600 }}
+              >
+                Status
               </Typography>
               <Chip
                 label={vehicle.status}
                 color={getStatusColor(vehicle.status)}
-                size="small"
+                size="medium"
+                sx={{ fontWeight: 600, textTransform: "capitalize" }}
               />
             </Box>
           </Grid>
 
           <Grid item xs={6}>
-            <Typography variant="caption" color="text.secondary">
-              CURRENT SPEED
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 600 }}
+            >
+              Current Speed
             </Typography>
-            <Typography variant="h6">{vehicle.speed}</Typography>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography variant="caption" color="text.secondary">
-              DRIVER
-            </Typography>
-            <Typography variant="h6">{vehicle.driverName}</Typography>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography variant="caption" color="text.secondary">
-              PHONE
-            </Typography>
-            <Typography variant="body2">
-              {vehicle.driverPhone || "N/A"}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography variant="caption" color="text.secondary">
-              LOCATION
-            </Typography>
-            <Typography variant="body2">
-              {vehicle.currentLocation
-                ? `${vehicle.currentLocation.lat}, ${vehicle.currentLocation.lng}`
-                : "N/A"}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography variant="caption" color="text.secondary">
-              DESTINATION
-            </Typography>
-            <Typography variant="body1">{vehicle.destination}</Typography>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography variant="caption" color="text.secondary">
-              BATTERY LEVEL
-            </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-              <LinearProgress
-                variant="determinate"
-                value={vehicle.batteryLevel || 0}
-                sx={{ flexGrow: 1, height: 8, borderRadius: 1 }}
-              />
-              <Typography variant="body2">
-                {vehicle.batteryLevel || 0}%
+            <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                {vehicle.speed}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                mph
               </Typography>
             </Box>
           </Grid>
 
           <Grid item xs={6}>
-            <Typography variant="caption" color="text.secondary">
-              FUEL LEVEL
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 600 }}
+            >
+              Driver
             </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              {vehicle.driverName}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 600 }}
+            >
+              Phone
+            </Typography>
+            <Typography variant="body1">
+              {vehicle.driverPhone || "N/A"}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 600 }}
+            >
+              Destination
+            </Typography>
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              {vehicle.destination}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 600 }}
+            >
+              Location
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: "monospace",
+                bgcolor: "grey.100",
+                p: 1,
+                borderRadius: 1,
+                wordBreak: "break-all",
+              }}
+            >
+              {formatLocation(vehicle.currentLocation)}
+            </Typography>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 600 }}
+            >
+              Battery Level
+            </Typography>
+            <Box sx={{ mt: 1 }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  {vehicle.batteryLevel || 0}%
+                </Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={vehicle.batteryLevel || 0}
+                sx={{
+                  height: 10,
+                  borderRadius: 1,
+                  bgcolor: "grey.200",
+                  "& .MuiLinearProgress-bar": {
+                    bgcolor:
+                      vehicle.batteryLevel > 50
+                        ? "success.main"
+                        : vehicle.batteryLevel > 20
+                        ? "warning.main"
+                        : "error.main",
+                  },
+                }}
+              />
+            </Box>
+          </Grid>
+
+          <Grid item xs={6}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 600 }}
+            >
+              Fuel Level
+            </Typography>
+            <Box sx={{ mt: 1 }}>
+              <Box
+                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  {vehicle.fuelLevel || 0}%
+                </Typography>
+              </Box>
               <LinearProgress
                 variant="determinate"
                 value={vehicle.fuelLevel || 0}
-                sx={{ flexGrow: 1, height: 8, borderRadius: 1 }}
+                sx={{
+                  height: 10,
+                  borderRadius: 1,
+                  bgcolor: "grey.200",
+                  "& .MuiLinearProgress-bar": {
+                    bgcolor:
+                      vehicle.fuelLevel > 50
+                        ? "success.main"
+                        : vehicle.fuelLevel > 20
+                        ? "warning.main"
+                        : "error.main",
+                  },
+                }}
               />
-              <Typography variant="body2">{vehicle.fuelLevel || 0}%</Typography>
             </Box>
           </Grid>
 
           <Grid item xs={12}>
-            <Typography variant="caption" color="text.secondary">
-              LAST UPDATED
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ fontWeight: 600 }}
+            >
+              Last Updated
             </Typography>
-            <Typography variant="body2">
-              {vehicle.lastUpdated || "N/A"}
+            <Typography variant="body1">
+              {formatDateTime(vehicle.lastUpdated)}
             </Typography>
           </Grid>
         </Grid>
