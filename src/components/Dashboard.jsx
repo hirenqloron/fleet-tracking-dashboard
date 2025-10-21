@@ -22,7 +22,7 @@ const Dashboard = () => {
   const sidebarContent = (
     <Box
       sx={{
-        width: isMobile ? 280 : 280,
+        width: 280,
         bgcolor: "white",
         p: 3,
         height: "100%",
@@ -87,7 +87,7 @@ const Dashboard = () => {
               borderRight: 1,
               borderColor: "divider",
               overflowY: "auto",
-              boxShadow: 2,
+              boxShadow: 1,
             }}
           >
             {sidebarContent}

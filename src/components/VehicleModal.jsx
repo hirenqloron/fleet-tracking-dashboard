@@ -2,20 +2,16 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   IconButton,
   Box,
   Typography,
-  Grid,
   Chip,
-  Divider,
   LinearProgress,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import {
   clearSelectedVehicle,
   selectSelectedVehicle,
@@ -48,6 +44,33 @@ const VehicleModal = () => {
     }
   };
 
+  const InfoField = ({ label, value, children }) => (
+    <Box sx={{ mb: 3 }}>
+      <Typography
+        variant="caption"
+        sx={{
+          color: "text.secondary",
+          fontWeight: 600,
+          textTransform: "uppercase",
+          fontSize: "0.7rem",
+          letterSpacing: 0.5,
+          display: "block",
+          mb: 1,
+        }}
+      >
+        {label}
+      </Typography>
+      {children || (
+        <Typography
+          variant="body1"
+          sx={{ fontWeight: 600, fontSize: "0.95rem" }}
+        >
+          {value}
+        </Typography>
+      )}
+    </Box>
+  );
+
   return (
     <Dialog
       open={Boolean(vehicle)}
@@ -57,228 +80,170 @@ const VehicleModal = () => {
       fullScreen={isMobile}
       PaperProps={{
         elevation: 8,
-        sx: { borderRadius: isMobile ? 0 : 2 },
+        sx: { borderRadius: isMobile ? 0 : 3 },
       }}
     >
-      <DialogTitle
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          bgcolor: "primary.main",
-          color: "primary.contrastText",
-          py: 2,
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-          <LocalShippingIcon sx={{ fontSize: 28 }} />
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            {vehicle.vehicleNumber}
-          </Typography>
-        </Box>
-        <IconButton
-          onClick={handleClose}
-          size="small"
+      <Box sx={{ p: 3 }}>
+        <Box
           sx={{
-            color: "primary.contrastText",
-            "&:hover": { bgcolor: "primary.dark" },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            mb: 3,
           }}
         >
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <Divider />
-      <DialogContent sx={{ pt: 3 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                sx={{ fontWeight: 600 }}
-              >
-                Status
-              </Typography>
-              <Chip
-                label={vehicle.status.replace("_", " ")}
-                color={getStatusColor(vehicle.status)}
-                size="medium"
-                sx={{ fontWeight: 600, textTransform: "capitalize" }}
-              />
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
+              🚛 {vehicle.vehicleNumber}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {vehicle.driverName} •{" "}
+              {vehicle.status.toUpperCase().replace("_", " ")}
+            </Typography>
+          </Box>
+          <IconButton
+            onClick={handleClose}
+            size="small"
+            sx={{
+              color: "text.secondary",
+              "&:hover": { bgcolor: "grey.100" },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+
+        <DialogContent sx={{ p: 0 }}>
+          <Box sx={{ display: "flex", gap: 4 }}>
+            <Box sx={{ flex: 1 }}>
+              <InfoField label="✓ STATUS">
+                <Chip
+                  label={vehicle.status.replace("_", " ").toUpperCase()}
+                  color={getStatusColor(vehicle.status)}
+                  size="small"
+                  sx={{ fontWeight: 700, textTransform: "uppercase" }}
+                />
+              </InfoField>
+
+              <InfoField label="👤 DRIVER" value={vehicle.driverName} />
+
+              <InfoField label="📍 DESTINATION" value={vehicle.destination} />
+
+              <InfoField label="🔋 BATTERY LEVEL">
+                <Box>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color:
+                        vehicle.batteryLevel > 20
+                          ? "success.main"
+                          : "error.main",
+                      mb: 0.5,
+                    }}
+                  >
+                    {vehicle.batteryLevel || 0}%
+                  </Typography>
+                  <LinearProgress
+                    variant="determinate"
+                    value={vehicle.batteryLevel || 0}
+                    sx={{
+                      height: 8,
+                      borderRadius: 1,
+                      bgcolor: "grey.200",
+                      "& .MuiLinearProgress-bar": {
+                        bgcolor:
+                          vehicle.batteryLevel > 50
+                            ? "success.main"
+                            : vehicle.batteryLevel > 20
+                            ? "warning.main"
+                            : "error.main",
+                        borderRadius: 1,
+                      },
+                    }}
+                  />
+                </Box>
+              </InfoField>
             </Box>
-          </Grid>
 
-          <Grid item xs={6}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 600 }}
-            >
-              Current Speed
-            </Typography>
-            <Box sx={{ display: "flex", alignItems: "baseline", gap: 0.5 }}>
-              <Typography variant="h5" sx={{ fontWeight: 700 }}>
-                {vehicle.speed}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                mph
-              </Typography>
-            </Box>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 600 }}
-            >
-              Driver
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              {vehicle.driverName}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 600 }}
-            >
-              Phone
-            </Typography>
-            <Typography variant="body1">
-              {vehicle.driverPhone || "N/A"}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 600 }}
-            >
-              Destination
-            </Typography>
-            <Typography variant="body1" sx={{ fontWeight: 500 }}>
-              {vehicle.destination}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 600 }}
-            >
-              Location
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                fontFamily: "monospace",
-                bgcolor: "grey.100",
-                p: 1,
-                borderRadius: 1,
-                wordBreak: "break-all",
-              }}
-            >
-              {formatLocation(vehicle.currentLocation)}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={6}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 600 }}
-            >
-              Battery Level
-            </Typography>
-            <Box sx={{ mt: 1 }}>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}
-              >
+            <Box sx={{ flex: 1 }}>
+              <InfoField label="🚗 CURRENT SPEED">
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  {vehicle.batteryLevel || 0}%
+                  {vehicle.speed}{" "}
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    mph
+                  </Typography>
                 </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={vehicle.batteryLevel || 0}
-                sx={{
-                  height: 10,
-                  borderRadius: 1,
-                  bgcolor: "grey.200",
-                  "& .MuiLinearProgress-bar": {
-                    bgcolor:
-                      vehicle.batteryLevel > 50
-                        ? "success.main"
-                        : vehicle.batteryLevel > 20
-                        ? "warning.main"
-                        : "error.main",
-                  },
-                }}
-              />
-            </Box>
-          </Grid>
+              </InfoField>
 
-          <Grid item xs={6}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 600 }}
-            >
-              Fuel Level
-            </Typography>
-            <Box sx={{ mt: 1 }}>
-              <Box
-                sx={{ display: "flex", alignItems: "center", gap: 1, mb: 0.5 }}
-              >
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  {vehicle.fuelLevel || 0}%
+              <InfoField
+                label="📞 PHONE"
+                value={vehicle.driverPhone || "N/A"}
+              />
+
+              <InfoField label="📍 LOCATION">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontFamily: "monospace",
+                    bgcolor: "grey.100",
+                    p: 1,
+                    borderRadius: 1,
+                    fontSize: "0.85rem",
+                  }}
+                >
+                  {formatLocation(vehicle.currentLocation)}
                 </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={vehicle.fuelLevel || 0}
-                sx={{
-                  height: 10,
-                  borderRadius: 1,
-                  bgcolor: "grey.200",
-                  "& .MuiLinearProgress-bar": {
-                    bgcolor:
-                      vehicle.fuelLevel > 50
-                        ? "success.main"
-                        : vehicle.fuelLevel > 20
-                        ? "warning.main"
-                        : "error.main",
-                  },
-                }}
-              />
-            </Box>
-          </Grid>
+              </InfoField>
 
-          <Grid item xs={12}>
-            <Typography
-              variant="overline"
-              color="text.secondary"
-              sx={{ fontWeight: 600 }}
-            >
-              Last Updated
-            </Typography>
-            <Typography variant="body1">
-              {formatDateTime(vehicle.lastUpdated)}
-            </Typography>
-          </Grid>
-        </Grid>
-      </DialogContent>
+              <InfoField label="⛽ FUEL LEVEL">
+                <Box>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 700,
+                      color:
+                        vehicle.fuelLevel > 20 ? "warning.main" : "error.main",
+                      mb: 0.5,
+                    }}
+                  >
+                    {vehicle.fuelLevel || 0}%
+                  </Typography>
+                  <LinearProgress
+                    variant="determinate"
+                    value={vehicle.fuelLevel || 0}
+                    sx={{
+                      height: 8,
+                      borderRadius: 1,
+                      bgcolor: "grey.200",
+                      "& .MuiLinearProgress-bar": {
+                        bgcolor:
+                          vehicle.fuelLevel > 50
+                            ? "success.main"
+                            : vehicle.fuelLevel > 20
+                            ? "warning.main"
+                            : "error.main",
+                        borderRadius: 1,
+                      },
+                    }}
+                  />
+                </Box>
+              </InfoField>
+            </Box>
+          </Box>
+
+          <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
+            <InfoField
+              label="🕐 LAST UPDATED"
+              value={formatDateTime(vehicle.lastUpdated)}
+            />
+          </Box>
+        </DialogContent>
+      </Box>
     </Dialog>
   );
 };

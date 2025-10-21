@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Typography,
-  List,
-  ListItemButton,
-  ListItemText,
+  ToggleButtonGroup,
+  ToggleButton,
   Chip,
 } from "@mui/material";
 import {
@@ -26,15 +25,14 @@ const StatusFilter = () => {
     ).length;
   };
 
-  const statuses = [
-    { value: "all", label: "All" },
-    { value: "idle", label: "Idle" },
-    { value: "en_route", label: "En Route" },
-    { value: "delivered", label: "Delivered" },
-  ];
+  const handleChange = (event, newStatus) => {
+    if (newStatus !== null) {
+      dispatch(setSelectedStatus(newStatus));
+    }
+  };
 
   return (
-    <Box sx={{ mb: 3 }}>
+    <Box sx={{ mb: 4 }}>
       <Typography
         variant="subtitle2"
         sx={{
@@ -42,53 +40,75 @@ const StatusFilter = () => {
           fontWeight: 700,
           color: "text.primary",
           textTransform: "uppercase",
-          fontSize: "0.75rem",
-          letterSpacing: 1,
+          fontSize: "0.7rem",
+          letterSpacing: 0.5,
         }}
       >
-        Filter by Status
+        ⚡ Filter by Status
       </Typography>
-      <List sx={{ bgcolor: "background.paper", borderRadius: 2, p: 0.5 }}>
-        {statuses.map((status) => (
-          <ListItemButton
-            key={status.value}
-            selected={selectedStatus === status.value}
-            onClick={() => dispatch(setSelectedStatus(status.value))}
-            sx={{
-              py: 1.5,
-              borderRadius: 1.5,
-              mb: 0.5,
-              "&.Mui-selected": {
-                bgcolor: "primary.main",
-                color: "primary.contrastText",
-                "&:hover": {
-                  bgcolor: "primary.dark",
-                },
-                "& .MuiChip-root": {
-                  bgcolor: "white",
-                  color: "primary.main",
-                  fontWeight: 700,
-                },
+      <ToggleButtonGroup
+        value={selectedStatus}
+        exclusive
+        onChange={handleChange}
+        orientation="vertical"
+        fullWidth
+        sx={{
+          "& .MuiToggleButton-root": {
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 1,
+            mb: 0.5,
+            py: 1.5,
+            px: 2,
+            textTransform: "none",
+            justifyContent: "space-between",
+            "&.Mui-selected": {
+              bgcolor: "primary.main",
+              color: "white",
+              "&:hover": {
+                bgcolor: "primary.dark",
               },
-            }}
-          >
-            <ListItemText
-              primary={status.label}
-              primaryTypographyProps={{
-                fontWeight: selectedStatus === status.value ? 700 : 500,
-              }}
-            />
-            <Chip
-              label={getStatusCount(status.value)}
-              size="small"
-              sx={{
-                fontWeight: 600,
-                minWidth: 32,
-              }}
-            />
-          </ListItemButton>
-        ))}
-      </List>
+              "& .MuiChip-root": {
+                bgcolor: "white",
+                color: "primary.main",
+              },
+            },
+          },
+        }}
+      >
+        <ToggleButton value="all">
+          <Typography sx={{ fontWeight: 500 }}>All</Typography>
+          <Chip
+            label={getStatusCount("all")}
+            size="small"
+            sx={{ fontWeight: 700 }}
+          />
+        </ToggleButton>
+        <ToggleButton value="idle">
+          <Typography sx={{ fontWeight: 500 }}>Idle</Typography>
+          <Chip
+            label={getStatusCount("idle")}
+            size="small"
+            sx={{ fontWeight: 700 }}
+          />
+        </ToggleButton>
+        <ToggleButton value="en_route">
+          <Typography sx={{ fontWeight: 500 }}>En Route</Typography>
+          <Chip
+            label={getStatusCount("en_route")}
+            size="small"
+            sx={{ fontWeight: 700 }}
+          />
+        </ToggleButton>
+        <ToggleButton value="delivered">
+          <Typography sx={{ fontWeight: 500 }}>Delivered</Typography>
+          <Chip
+            label={getStatusCount("delivered")}
+            size="small"
+            sx={{ fontWeight: 700 }}
+          />
+        </ToggleButton>
+      </ToggleButtonGroup>
     </Box>
   );
 };

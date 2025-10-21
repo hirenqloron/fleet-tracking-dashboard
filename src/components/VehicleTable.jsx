@@ -14,16 +14,13 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-  Card,
-  CardContent,
-  Grid,
-  Divider,
 } from "@mui/material";
 import {
   fetchVehicles,
   selectFilteredVehicles,
   selectVehiclesLoading,
   setSelectedVehicle,
+  selectWebSocketConnected,
 } from "../redux/slices/vehicleSlice";
 import { fetchStatistics } from "../redux/slices/statisticsSlice";
 import {
@@ -31,11 +28,13 @@ import {
   disconnectWebSocket,
 } from "../redux/middleware/websocketMiddleware";
 import { formatDateTime, formatLocation, formatETA } from "../utils/formatters";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 const VehicleTable = () => {
   const dispatch = useDispatch();
   const vehicles = useSelector(selectFilteredVehicles);
   const loading = useSelector(selectVehiclesLoading);
+  const isConnected = useSelector(selectWebSocketConnected);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -45,7 +44,6 @@ const VehicleTable = () => {
     dispatch(connectWebSocket());
 
     const pollInterval = setInterval(() => {
-      console.log("Polling for updates - 3 minutes elapsed");
       dispatch(fetchVehicles());
       dispatch(fetchStatistics());
     }, 180000);
@@ -89,145 +87,91 @@ const VehicleTable = () => {
     );
   }
 
-  if (isMobile) {
-    return (
-      <Box>
-        <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
-          Vehicles ({vehicles.length})
-        </Typography>
-        {vehicles.map((vehicle) => (
-          <Card
-            key={vehicle.id}
-            onClick={() => handleRowClick(vehicle)}
-            sx={{
-              mb: 2,
-              cursor: "pointer",
-              "&:hover": {
-                boxShadow: 4,
-                transform: "translateY(-2px)",
-              },
-              transition: "all 0.2s",
-            }}
-          >
-            <CardContent>
-              <Box
-                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
-              >
-                <Typography
-                  variant="h6"
-                  color="primary"
-                  sx={{ fontWeight: 700 }}
-                >
-                  {vehicle.vehicleNumber}
-                </Typography>
-                <Chip
-                  label={vehicle.status.replace("_", " ")}
-                  color={getStatusColor(vehicle.status)}
-                  size="small"
-                  sx={{ fontWeight: 600, textTransform: "capitalize" }}
-                />
-              </Box>
-              <Grid container spacing={1}>
-                <Grid item xs={6}>
-                  <Typography variant="caption" color="text.secondary">
-                    Driver
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {vehicle.driverName}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography variant="caption" color="text.secondary">
-                    Speed
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    {vehicle.speed} mph
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Divider sx={{ my: 1 }} />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="caption" color="text.secondary">
-                    Destination
-                  </Typography>
-                  <Typography variant="body2">{vehicle.destination}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="caption" color="text.secondary">
-                    Last Update
-                  </Typography>
-                  <Typography variant="body2" sx={{ fontSize: "0.813rem" }}>
-                    {formatDateTime(vehicle.lastUpdated)}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
-    );
-  }
-
   return (
     <Box>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 700 }}>
-        Vehicles ({vehicles.length})
-      </Typography>
-      <TableContainer
-        component={Paper}
-        elevation={2}
+      <Box
         sx={{
-          borderRadius: 2,
-          overflow: "auto",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
         }}
       >
-        <Table sx={{ minWidth: 1200 }}>
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          Vehicles ({vehicles.length})
+        </Typography>
+        <Chip
+          icon={
+            <FiberManualRecordIcon
+              sx={{
+                fontSize: 10,
+                animation: isConnected ? "pulse 2s infinite" : "none",
+              }}
+            />
+          }
+          label="Live"
+          color="success"
+          size="small"
+          sx={{
+            "@keyframes pulse": {
+              "0%, 100%": { opacity: 1 },
+              "50%": { opacity: 0.5 },
+            },
+          }}
+        />
+      </Box>
+      <TableContainer
+        component={Paper}
+        elevation={0}
+        sx={{
+          borderRadius: 2,
+          border: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        <Table>
           <TableHead>
-            <TableRow sx={{ bgcolor: "grey.100" }}>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.875rem" }}>
-                Vehicle ID
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.875rem" }}>
-                Driver
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.875rem" }}>
-                Status
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.875rem" }}>
-                Speed
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.875rem" }}>
-                Destination
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.875rem" }}>
-                ETA
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.875rem" }}>
-                Last Update
-              </TableCell>
-              <TableCell sx={{ fontWeight: 700, fontSize: "0.875rem" }}>
-                Location
-              </TableCell>
+            <TableRow sx={{ bgcolor: "grey.50" }}>
+              <TableCell sx={{ fontWeight: 700, py: 2 }}>Vehicle</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Driver</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Speed</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Destination</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>ETA</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Last Update</TableCell>
+              <TableCell sx={{ fontWeight: 700 }}>Location</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {vehicles.map((vehicle, index) => (
+            {vehicles.map((vehicle) => (
               <TableRow
                 key={vehicle.id}
-                onClick={() => handleRowClick(vehicle)}
                 sx={{
                   cursor: "pointer",
-                  bgcolor: index % 2 === 0 ? "white" : "grey.50",
                   "&:hover": {
                     bgcolor: "primary.light",
-                    "& td": { color: "primary.contrastText" },
+                    "& .MuiTableCell-root": {
+                      color: "primary.contrastText",
+                    },
+                    "& .vehicle-link": {
+                      color: "primary.contrastText",
+                    },
                   },
                   transition: "all 0.2s",
                 }}
+                onClick={() => handleRowClick(vehicle)}
               >
-                <TableCell sx={{ fontWeight: 600, color: "primary.main" }}>
-                  {vehicle.vehicleNumber}
+                <TableCell>
+                  <Typography
+                    className="vehicle-link"
+                    sx={{
+                      fontWeight: 600,
+                      color: "primary.main",
+                      textDecoration: "none",
+                    }}
+                  >
+                    {vehicle.vehicleNumber}
+                  </Typography>
                 </TableCell>
                 <TableCell>{vehicle.driverName}</TableCell>
                 <TableCell>
@@ -235,31 +179,26 @@ const VehicleTable = () => {
                     label={vehicle.status.replace("_", " ")}
                     color={getStatusColor(vehicle.status)}
                     size="small"
-                    sx={{ fontWeight: 600, textTransform: "capitalize" }}
+                    sx={{
+                      fontWeight: 600,
+                      textTransform: "capitalize",
+                      fontSize: "0.75rem",
+                    }}
                   />
                 </TableCell>
                 <TableCell>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {vehicle.speed}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      mph
-                    </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell sx={{ maxWidth: 200 }}>
-                  <Typography variant="body2" noWrap>
-                    {vehicle.destination}
+                  <Typography variant="body2">
+                    <strong>{vehicle.speed}</strong> mph
                   </Typography>
                 </TableCell>
+                <TableCell>{vehicle.destination}</TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontSize: "0.813rem" }}>
+                  <Typography variant="body2">
                     {formatETA(vehicle.estimatedArrival)}
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2" sx={{ fontSize: "0.813rem" }}>
+                  <Typography variant="body2">
                     {formatDateTime(vehicle.lastUpdated)}
                   </Typography>
                 </TableCell>
@@ -267,9 +206,9 @@ const VehicleTable = () => {
                   <Typography
                     variant="body2"
                     sx={{
-                      fontSize: "0.813rem",
                       fontFamily: "monospace",
                       color: "text.secondary",
+                      fontSize: "0.813rem",
                     }}
                   >
                     {formatLocation(vehicle.currentLocation)}
