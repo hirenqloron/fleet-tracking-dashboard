@@ -95,7 +95,11 @@ const VehicleTable = () => {
   }
 
   return (
-    <Box>
+    <Box
+      sx={{
+        p: 0,
+      }}
+    >
       <Box
         sx={{
           display: "flex",
@@ -104,7 +108,15 @@ const VehicleTable = () => {
           mb: 3,
         }}
       >
-        <Typography variant="h6" sx={{ fontWeight: 700, fontSize: "1.125rem" }}>
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 700,
+            fontSize: "1.125rem",
+            marginLeft: "15px",
+            marginTop: "15px",
+          }}
+        >
           Vehicles ({vehicles.length})
         </Typography>
         <Box
@@ -116,6 +128,8 @@ const VehicleTable = () => {
             py: 0.5,
             bgcolor: "success.light",
             borderRadius: 1,
+            marginTop: "15px",
+            marginRight: "15px",
           }}
         >
           <FiberManualRecordIcon
@@ -149,12 +163,10 @@ const VehicleTable = () => {
           borderRadius: 1,
         }}
       >
-        <Table>
+        <Table className="vehicle-table">
           <TableHead>
             <TableRow sx={{ bgcolor: "grey.50" }}>
-              <TableCell
-                sx={{ fontWeight: 700, fontSize: "0.813rem", py: 1.5 }}
-              >
+              <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>
                 Vehicle
               </TableCell>
               <TableCell sx={{ fontWeight: 700, fontSize: "0.813rem" }}>

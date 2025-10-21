@@ -86,7 +86,7 @@ const Dashboard = () => {
               </Box>
               {sidebarContent}
             </Drawer>
-            <Box sx={{ flex: 1, p: 2, overflowY: "auto" }}>
+            <Box sx={{ flex: 1, p: 0, overflowY: "auto" }}>
               <Container maxWidth="xl" disableGutters>
                 <VehicleTable />
               </Container>
@@ -106,7 +106,7 @@ const Dashboard = () => {
             >
               {sidebarContent}
             </Box>
-            <Box sx={{ flex: 1, p: 4, overflowY: "auto" }}>
+            <Box sx={{ flex: 1, p: 0, overflowY: "auto" }}>
               <Container maxWidth="xl">
                 <VehicleTable />
               </Container>
