@@ -1,22 +1,22 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { vehicleAPI } from '../../services/api';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { vehicleAPI } from "../../services/api";
 
 export const fetchStatistics = createAsyncThunk(
-  'statistics/fetch',
+  "statistics/fetch",
   async () => {
     const response = await vehicleAPI.getStatistics();
-    return response.data;
+    return response.data.data;
   }
 );
 
 const statisticsSlice = createSlice({
-  name: 'statistics',
+  name: "statistics",
   initialState: {
     data: {
       total: 0,
-      avgSpeed: 0,
+      average_speed: 0,
       delivered: 0,
-      enRoute: 0,
+      en_route: 0,
       idle: 0,
     },
     loading: false,

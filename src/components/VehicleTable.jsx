@@ -15,7 +15,6 @@ import {
 } from "@mui/material";
 import {
   fetchVehicles,
-  fetchVehiclesByStatus,
   selectFilteredVehicles,
   selectVehiclesLoading,
   setSelectedVehicle,
@@ -29,21 +28,15 @@ const VehicleTable = () => {
   const dispatch = useDispatch();
   const vehicles = useSelector(selectFilteredVehicles);
   const loading = useSelector(selectVehiclesLoading);
-  const selectedStatus = useSelector((state) => state.vehicles.selectedStatus);
 
   useEffect(() => {
-    if (selectedStatus === "all") {
-      dispatch(fetchVehicles());
-    } else {
-      dispatch(fetchVehiclesByStatus(selectedStatus));
-    }
-
+    dispatch(fetchVehicles());
     dispatch(connectWebSocket());
 
     return () => {
       dispatch(disconnectWebSocket());
     };
-  }, [dispatch, selectedStatus]);
+  }, [dispatch]);
 
   const handleRowClick = (vehicle) => {
     dispatch(setSelectedVehicle(vehicle));
@@ -106,8 +99,8 @@ const VehicleTable = () => {
                   "&:hover": { bgcolor: "grey.50" },
                 }}
               >
-                <TableCell>{vehicle.vehicle_id}</TableCell>
-                <TableCell>{vehicle.driver}</TableCell>
+                <TableCell>{vehicle.vehicleNumber}</TableCell>
+                <TableCell>{vehicle.driverName}</TableCell>
                 <TableCell>
                   <Chip
                     label={vehicle.status}
@@ -117,11 +110,11 @@ const VehicleTable = () => {
                 </TableCell>
                 <TableCell>{vehicle.speed}</TableCell>
                 <TableCell>{vehicle.destination}</TableCell>
-                <TableCell>{vehicle.eta || "-"}</TableCell>
-                <TableCell>{vehicle.last_update}</TableCell>
+                <TableCell>{vehicle.estimatedArrival || "-"}</TableCell>
+                <TableCell>{vehicle.lastUpdated}</TableCell>
                 <TableCell>
-                  {vehicle.location
-                    ? `${vehicle.location.lat}, ${vehicle.location.lng}`
+                  {vehicle.currentLocation
+                    ? `${vehicle.currentLocation.lat}, ${vehicle.currentLocation.lng}`
                     : "-"}
                 </TableCell>
               </TableRow>

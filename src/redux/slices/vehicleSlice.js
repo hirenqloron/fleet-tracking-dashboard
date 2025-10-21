@@ -3,22 +3,14 @@ import { vehicleAPI } from "../../services/api";
 
 export const fetchVehicles = createAsyncThunk("vehicles/fetchAll", async () => {
   const response = await vehicleAPI.getAllVehicles();
-  return response.data;
+  return response.data.data;
 });
 
 export const fetchVehicleById = createAsyncThunk(
   "vehicles/fetchById",
   async (id) => {
     const response = await vehicleAPI.getVehicleById(id);
-    return response.data;
-  }
-);
-
-export const fetchVehiclesByStatus = createAsyncThunk(
-  "vehicles/fetchByStatus",
-  async (status) => {
-    const response = await vehicleAPI.getVehiclesByStatus(status);
-    return response.data;
+    return response.data.data;
   }
 );
 
@@ -68,17 +60,6 @@ const vehicleSlice = createSlice({
       })
       .addCase(fetchVehicleById.fulfilled, (state, action) => {
         state.selectedVehicle = action.payload;
-      })
-      .addCase(fetchVehiclesByStatus.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchVehiclesByStatus.fulfilled, (state, action) => {
-        state.loading = false;
-        state.list = action.payload;
-      })
-      .addCase(fetchVehiclesByStatus.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
       });
   },
 });
