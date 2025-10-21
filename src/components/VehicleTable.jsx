@@ -25,6 +25,7 @@ import {
   selectVehiclesLoading,
   setSelectedVehicle,
 } from "../redux/slices/vehicleSlice";
+import { fetchStatistics } from "../redux/slices/statisticsSlice";
 import {
   connectWebSocket,
   disconnectWebSocket,
@@ -40,10 +41,18 @@ const VehicleTable = () => {
 
   useEffect(() => {
     dispatch(fetchVehicles());
+    dispatch(fetchStatistics());
     dispatch(connectWebSocket());
+
+    const pollInterval = setInterval(() => {
+      console.log("Polling for updates - 3 minutes elapsed");
+      dispatch(fetchVehicles());
+      dispatch(fetchStatistics());
+    }, 180000);
 
     return () => {
       dispatch(disconnectWebSocket());
+      clearInterval(pollInterval);
     };
   }, [dispatch]);
 
@@ -52,7 +61,8 @@ const VehicleTable = () => {
   };
 
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
+    const normalizedStatus = status.toLowerCase().replace("_", " ");
+    switch (normalizedStatus) {
       case "delivered":
         return "success";
       case "en route":
@@ -111,10 +121,10 @@ const VehicleTable = () => {
                   {vehicle.vehicleNumber}
                 </Typography>
                 <Chip
-                  label={vehicle.status}
+                  label={vehicle.status.replace("_", " ")}
                   color={getStatusColor(vehicle.status)}
                   size="small"
-                  sx={{ fontWeight: 600 }}
+                  sx={{ fontWeight: 600, textTransform: "capitalize" }}
                 />
               </Box>
               <Grid container spacing={1}>
@@ -222,7 +232,7 @@ const VehicleTable = () => {
                 <TableCell>{vehicle.driverName}</TableCell>
                 <TableCell>
                   <Chip
-                    label={vehicle.status}
+                    label={vehicle.status.replace("_", " ")}
                     color={getStatusColor(vehicle.status)}
                     size="small"
                     sx={{ fontWeight: 600, textTransform: "capitalize" }}

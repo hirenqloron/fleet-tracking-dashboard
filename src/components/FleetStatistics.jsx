@@ -1,10 +1,7 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import { Box, Typography, Paper, Grid } from "@mui/material";
-import {
-  fetchStatistics,
-  selectStatistics,
-} from "../redux/slices/statisticsSlice";
+import { selectStatistics } from "../redux/slices/statisticsSlice";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import SpeedIcon from "@mui/icons-material/Speed";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -12,12 +9,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 
 const FleetStatistics = () => {
-  const dispatch = useDispatch();
   const statistics = useSelector(selectStatistics);
-  console.log(statistics, 123)
-  useEffect(() => {
-    dispatch(fetchStatistics());
-  }, [dispatch]);
 
   const StatCard = ({ icon, value, label, color, bgColor }) => (
     <Paper
