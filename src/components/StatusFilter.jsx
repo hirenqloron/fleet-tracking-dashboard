@@ -5,12 +5,15 @@ import {
   Typography,
   ToggleButtonGroup,
   ToggleButton,
+  Radio,
 } from "@mui/material";
+import WifiIcon from "@mui/icons-material/Wifi";
 import {
   setSelectedStatus,
   selectSelectedStatus,
   fetchVehicles,
   fetchVehiclesByStatus,
+  selectWebSocketConnected,
 } from "../redux/slices/vehicleSlice";
 import {
   selectStatistics,
@@ -21,6 +24,7 @@ const StatusFilter = ({ onClose }) => {
   const dispatch = useDispatch();
   const selectedStatus = useSelector(selectSelectedStatus);
   const statistics = useSelector(selectStatistics);
+  const isConnected = useSelector(selectWebSocketConnected);
 
   const getStatusCount = (status) => {
     if (!statistics) return 0;
@@ -57,18 +61,49 @@ const StatusFilter = ({ onClose }) => {
 
   return (
     <Box sx={{ mb: 4 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 1,
+          border: "2px solid",
+          borderColor: isConnected ? "success.main" : "grey.300",
+          borderRadius: 2,
+          py: 2,
+          px: 3,
+          mb: 3,
+          bgcolor: "white",
+        }}
+      >
+        <WifiIcon
+          sx={{
+            color: isConnected ? "success.main" : "grey.400",
+            fontSize: 18,
+          }}
+        />
+        <Typography
+          sx={{
+            fontWeight: 400,
+            fontSize: "0.8rem",
+            color: isConnected ? "success.main" : "grey.400",
+          }}
+        >
+          Live Updates {isConnected ? "Active" : "Inactive"}
+        </Typography>
+      </Box>
+
       <Typography
         variant="subtitle2"
         sx={{
           mb: 2,
-          fontWeight: 800,
+          fontWeight: 600,
           color: "text.primary",
-          textTransform: "uppercase",
-          fontSize: "0.9rem",
+          fontSize: "0.8rem",
           letterSpacing: 0.5,
         }}
       >
-        Filter by Status
+        Filter By Status
       </Typography>
 
       <ToggleButtonGroup
@@ -79,19 +114,25 @@ const StatusFilter = ({ onClose }) => {
         fullWidth
         sx={{
           "& .MuiToggleButton-root": {
-            border: "1px solid",
+            border: "2px solid",
             borderColor: "divider",
-            borderRadius: 1,
+            borderRadius: 2,
             textTransform: "none",
             justifyContent: "space-between",
             px: 2,
             py: 1.5,
+            bgcolor: "white",
+            color: "text.primary",
             "&.Mui-selected": {
-              bgcolor: "primary.main",
-              color: "white",
+              bgcolor: "white",
+              color: "primary.main",
+              borderColor: "primary.main",
               "&:hover": {
-                bgcolor: "primary.dark",
+                bgcolor: "rgba(25, 118, 210, 0.04)",
               },
+            },
+            "&:hover": {
+              bgcolor: "grey.50",
             },
           },
         }}
@@ -101,13 +142,25 @@ const StatusFilter = ({ onClose }) => {
             <Box
               sx={{
                 display: "flex",
+                alignItems: "center",
                 justifyContent: "space-between",
                 width: "100%",
               }}
             >
-              <Typography sx={{ fontWeight: 500 }}>All</Typography>
-              <Typography sx={{ fontWeight: 700 }}>
-                {getStatusCount("all")}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Radio
+                  checked={selectedStatus === "all"}
+                  sx={{
+                    p: 0,
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 20,
+                    },
+                  }}
+                />
+                <Typography sx={{ fontWeight: 400 }}>All</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: 500 }}>
+                ({getStatusCount("all")})
               </Typography>
             </Box>
           </ToggleButton>
@@ -115,13 +168,25 @@ const StatusFilter = ({ onClose }) => {
             <Box
               sx={{
                 display: "flex",
+                alignItems: "center",
                 justifyContent: "space-between",
                 width: "100%",
               }}
             >
-              <Typography sx={{ fontWeight: 500 }}>Idle</Typography>
-              <Typography sx={{ fontWeight: 700 }}>
-                {getStatusCount("idle")}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Radio
+                  checked={selectedStatus === "idle"}
+                  sx={{
+                    p: 0,
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 20,
+                    },
+                  }}
+                />
+                <Typography sx={{ fontWeight: 400 }}>Idle</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: 500 }}>
+                ({getStatusCount("idle")})
               </Typography>
             </Box>
           </ToggleButton>
@@ -132,13 +197,25 @@ const StatusFilter = ({ onClose }) => {
             <Box
               sx={{
                 display: "flex",
+                alignItems: "center",
                 justifyContent: "space-between",
                 width: "100%",
               }}
             >
-              <Typography sx={{ fontWeight: 500 }}>En Route</Typography>
-              <Typography sx={{ fontWeight: 700 }}>
-                {getStatusCount("en_route")}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Radio
+                  checked={selectedStatus === "en_route"}
+                  sx={{
+                    p: 0,
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 20,
+                    },
+                  }}
+                />
+                <Typography sx={{ fontWeight: 400 }}>En Route</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: 500 }}>
+                ({getStatusCount("en_route")})
               </Typography>
             </Box>
           </ToggleButton>
@@ -146,13 +223,25 @@ const StatusFilter = ({ onClose }) => {
             <Box
               sx={{
                 display: "flex",
+                alignItems: "center",
                 justifyContent: "space-between",
                 width: "100%",
               }}
             >
-              <Typography sx={{ fontWeight: 500 }}>Delivered</Typography>
-              <Typography sx={{ fontWeight: 700 }}>
-                {getStatusCount("delivered")}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Radio
+                  checked={selectedStatus === "delivered"}
+                  sx={{
+                    p: 0,
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 20,
+                    },
+                  }}
+                />
+                <Typography sx={{ fontWeight: 400 }}>Delivered</Typography>
+              </Box>
+              <Typography sx={{ fontWeight: 500 }}>
+                ({getStatusCount("delivered")})
               </Typography>
             </Box>
           </ToggleButton>

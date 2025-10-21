@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Box, Typography } from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import PeopleIcon from "@mui/icons-material/People";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { selectStatistics } from "../redux/slices/statisticsSlice";
 import { selectLastUpdated } from "../redux/slices/vehicleSlice";
 
@@ -44,81 +48,123 @@ const FleetStatistics = () => {
     return `~${seconds} seconds`;
   };
 
-  const calculateMovingPercentage = () => {
-    if (!statistics?.total || statistics.total === 0) return 0;
-    const moving = statistics.en_route || 0;
-    return Math.round((moving / statistics.total) * 100);
+  const calculateMovingCount = () => {
+    return statistics?.en_route || 0;
   };
 
-  const StatItem = ({ value, label }) => (
+  const StatCard = ({ icon, value, label }) => (
     <Box
       sx={{
-        textAlign: "center",
         flex: 1,
-        borderBottom: "1px solid rgba(0, 0, 0, 0.12)",
-        borderRadius: "6px",
+        border: "2px solid",
+        borderColor: "divider",
+        borderRadius: 2,
+        p: 1.5,
+        bgcolor: "white",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 0.75,
       }}
     >
-      <Typography 
-        variant="h5"
-        sx={{ fontWeight: 700, color: "text.primary", mb: 0.5 }}
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 700,
+          color: "text.primary",
+          fontSize: "1.75rem",
+        }}
       >
         {value}
       </Typography>
-      <Typography
-        variant="caption"
-        sx={{
-          fontWeight: 600,
-          textTransform: "uppercase",
-          letterSpacing: 0.5,
-          color: "text.secondary",
-          fontSize: "0.65rem",
-        }}
-      >
-        {label}
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        {icon}
+        <Typography
+          variant="caption"
+          sx={{
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+            color: "text.secondary",
+            fontSize: "0.688rem",
+          }}
+        >
+          {label}
+        </Typography>
+      </Box>
     </Box>
   );
 
   return (
     <Box>
-      <Typography
-        variant="subtitle2"
-        sx={{
-          mb: 3,
-          fontWeight: 800,
-          color: "text.primary",
-          textTransform: "uppercase",
-          fontSize: "0.9rem",
-          letterSpacing: 0.5,
-        }}
-      >
-        Fleet Statistics
-      </Typography>
-
-      <Box sx={{ display: "flex", gap: 3, mb: 2 }}>
-        <StatItem value={statistics?.total || 0} label="Total Fleet" />
-        <StatItem value={statistics?.average_speed || 0} label="Avg Speed" />
+      <Box sx={{ display: "flex", alignItems: "center",  mb: 2.5 }}>
+        <Typography
+          variant="subtitle2"
+          sx={{
+            mb: 2,
+            fontWeight: 600,
+            color: "text.primary",
+            fontSize: "0.8rem",
+            letterSpacing: 0.5,
+          }}
+        >
+          Fleet Statistics
+        </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 3, mb: 2 }}>
-        <StatItem value={calculateMovingPercentage()} label="% Moving" />
-        <StatItem value={formatTime(lastUpdated)} label="Last Update" />
+      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <StatCard
+          icon={<PeopleIcon sx={{ fontSize: 16, color: "text.secondary" }} />}
+          value={statistics?.total || 0}
+          label="Total Fleet"
+        />
+        <StatCard
+          icon={
+            <TrendingUpIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+          }
+          value={statistics?.average_speed || 0}
+          label="Avg Speed"
+        />
       </Box>
 
-      <Typography
-        variant="caption"
+      <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+        <StatCard
+          icon={
+            <ShowChartIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+          }
+          value={calculateMovingCount()}
+          label="Moving"
+        />
+        <StatCard
+          icon={
+            <AccessTimeIcon sx={{ fontSize: 16, color: "text.secondary" }} />
+          }
+          value={formatTime(lastUpdated)}
+          label="Last Update"
+        />
+      </Box>
+
+      <Box
         sx={{
-          display: "block",
-          mt: 2,
-          color: "text.secondary",
-          fontSize: "0.7rem",
-          textAlign: "center",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 0.5,
+          mt: 1.5,
         }}
       >
-        Updated {formatTimeSince(timeSinceUpdate)} • Next update in{" "}
-        {getNextUpdateTime()}
-      </Typography>
+        <AccessTimeIcon sx={{ fontSize: 14, color: "text.secondary" }} />
+        <Typography
+          variant="caption"
+          sx={{
+            color: "text.secondary",
+            fontSize: "0.75rem",
+          }}
+        >
+          Updated {formatTimeSince(timeSinceUpdate)} • Next update in{" "}
+          {getNextUpdateTime()}
+        </Typography>
+      </Box>
     </Box>
   );
 };
