@@ -50,6 +50,7 @@ const VehicleModal = () => {
         mb: 3,
         pl: 2,
         borderLeft: "3px solid",
+        borderRadius: "6px",
         borderColor: "primary.main",
       }}
     >
@@ -136,9 +137,9 @@ const VehicleModal = () => {
         </Box>
 
         <DialogContent sx={{ p: 0 }}>
-          <Box sx={{ display: "flex", gap: 4 }}>
+          <Box sx={{ display: "flex", gap: 3, mb: 0 }}>
             <Box sx={{ flex: 1 }}>
-              <InfoField label="✓ STATUS">
+              <InfoField label="STATUS">
                 <Chip
                   label={vehicle.status.replace("_", " ").toUpperCase()}
                   color={getStatusColor(vehicle.status)}
@@ -146,11 +147,59 @@ const VehicleModal = () => {
                   sx={{ fontWeight: 700, textTransform: "uppercase" }}
                 />
               </InfoField>
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <InfoField label="🚗 CURRENT SPEED">
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  {vehicle.speed}{" "}
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    mph
+                  </Typography>
+                </Typography>
+              </InfoField>
+            </Box>
+          </Box>
 
+          <Box sx={{ display: "flex", gap: 3, mb: 0 }}>
+            <Box sx={{ flex: 1 }}>
               <InfoField label="👤 DRIVER" value={vehicle.driverName} />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <InfoField
+                label="📞 PHONE"
+                value={vehicle.driverPhone || "N/A"}
+              />
+            </Box>
+          </Box>
 
+          <Box sx={{ display: "flex", gap: 3, mb: 0 }}>
+            <Box sx={{ flex: 1 }}>
               <InfoField label="📍 DESTINATION" value={vehicle.destination} />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+              <InfoField label="📍 LOCATION">
+                <Typography
+                  variant="body2"
+                  sx={{
+                    fontFamily: "monospace",
+                    bgcolor: "grey.100",
+                    p: 1,
+                    borderRadius: 1,
+                    fontSize: "0.85rem",
+                  }}
+                >
+                  {formatLocation(vehicle.currentLocation)}
+                </Typography>
+              </InfoField>
+            </Box>
+          </Box>
 
+          <Box sx={{ display: "flex", gap: 3, mb: 0 }}>
+            <Box sx={{ flex: 1 }}>
               <InfoField label="🔋 BATTERY LEVEL">
                 <Box sx={{ width: "100%" }}>
                   <Typography
@@ -187,41 +236,7 @@ const VehicleModal = () => {
                 </Box>
               </InfoField>
             </Box>
-
             <Box sx={{ flex: 1 }}>
-              <InfoField label="🚗 CURRENT SPEED">
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  {vehicle.speed}{" "}
-                  <Typography
-                    component="span"
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    mph
-                  </Typography>
-                </Typography>
-              </InfoField>
-
-              <InfoField
-                label="📞 PHONE"
-                value={vehicle.driverPhone || "N/A"}
-              />
-
-              <InfoField label="📍 LOCATION">
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontFamily: "monospace",
-                    bgcolor: "grey.100",
-                    p: 1,
-                    borderRadius: 1,
-                    fontSize: "0.85rem",
-                  }}
-                >
-                  {formatLocation(vehicle.currentLocation)}
-                </Typography>
-              </InfoField>
-
               <InfoField label="⛽ FUEL LEVEL">
                 <Box sx={{ width: "100%" }}>
                   <Typography
@@ -257,8 +272,7 @@ const VehicleModal = () => {
               </InfoField>
             </Box>
           </Box>
-
-          <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: "divider" }}>
+          <Box sx={{ flex: 1 }}>
             <InfoField
               label="🕐 LAST UPDATED"
               value={formatDateTime(vehicle.lastUpdated)}
